@@ -1394,3 +1394,646 @@ a {
     margin-top: 25px;
   }
 }
+
+/* =========================================
+   AI HUMAN TRACKER
+========================================= */
+
+.human-tracker-card {
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.human-tracker-header {
+  display: flex;
+  justify-content: space-between;
+nano src/index.css  align-items: center;
+  padding: 20px;
+}
+
+.human-tracker-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.human-tracker-header p {
+  margin: 6px 0 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.tracker-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.tracker-status span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+}
+
+.tracker-status.active {
+  color: #4ade80;
+}
+
+.tracker-status.active span {
+  background: #4ade80;
+}
+
+.human-tracker-view {
+  position: relative;
+  margin: 0 10px;
+  min-height: 480px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #050505;
+}
+
+.human-tracker-video {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  display: block;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.human-tracker-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  pointer-events: none;
+  transform: scaleX(-1);
+}
+
+.tracker-start {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 30px;
+}
+
+.tracker-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.tracker-start h3 {
+  margin: 0 0 8px;
+}
+
+.tracker-start p {
+  max-width: 430px;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.tracker-start-button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 22px;
+  background: #fff;
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tracker-error {
+  margin: 10px 0;
+  color: #ff7070;
+  font-size: 13px;
+}
+
+.tracking-info {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 13px;
+}
+
+.tracking-info span {
+  margin-right: 6px;
+}
+
+.landmark-info {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  display: flex;
+  gap: 8px;
+}
+
+.landmark-info span {
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  font-size: 12px;
+}
+
+.human-tracker-footer {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 16px 20px;
+}
+
+.human-tracker-footer div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.human-tracker-footer span {
+  color: #777;
+  font-size: 11px;
+}
+
+.human-tracker-footer strong {
+  font-size: 13px;
+}
+
+.tracker-stop-button {
+  margin-left: auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+/* =====================================================
+   SIGNCONNECT AI - JARVIS LOGIN
+   ===================================================== */
+
+.login-page {
+  min-height: 100vh;
+  background: #252a2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-card {
+  width: min(1100px, 100%);
+  min-height: 650px;
+  display: grid;
+  grid-template-columns: 42% 58%;
+  background: #ffffff;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+}
+
+/* LEFT JARVIS PANEL */
+
+.login-welcome {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    #ff5274,
+    #ff7897 50%,
+    #ffb0c2
+  );
+  color: white;
+}
+
+.welcome-decoration {
+  position: absolute;
+  transform: rotate(45deg);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.decoration-one {
+  width: 350px;
+  height: 120px;
+  top: 80px;
+  left: -80px;
+}
+
+.decoration-two {
+  width: 450px;
+  height: 120px;
+  bottom: 120px;
+  left: -130px;
+}
+
+.decoration-three {
+  width: 280px;
+  height: 100px;
+  top: 350px;
+  right: -150px;
+}
+
+.jarvis-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+}
+
+.jarvis-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 25px;
+  backdrop-filter: blur(8px);
+}
+
+.jarvis-small {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 0 0 15px;
+}
+
+.jarvis-content h1 {
+  font-size: 52px;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.jarvis-content h1 span {
+  color: #ffffff;
+}
+
+.jarvis-description {
+  max-width: 300px;
+  font-size: 17px;
+  line-height: 1.7;
+  margin-top: 25px;
+  opacity: 0.95;
+}
+
+.jarvis-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 30px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 13px;
+}
+
+.jarvis-status span {
+  width: 8px;
+  height: 8px;
+  background: #39e58c;
+  border-radius: 50%;
+}
+
+/* RIGHT LOGIN PANEL */
+
+.login-form-panel {
+  padding: 55px 75px 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.login-logo-icon {
+  font-size: 52px;
+  margin-bottom: 5px;
+}
+
+.login-logo h2 {
+  margin: 0;
+  font-size: 30px;
+  color: #ff5c78;
+}
+
+.login-logo p {
+  margin: 5px 0 0;
+  color: #8b9aa2;
+  font-size: 14px;
+}
+
+.login-heading {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-heading h3 {
+  margin: 0;
+  font-size: 25px;
+  color: #37474f;
+}
+
+.login-heading p {
+  margin: 8px 0 0;
+  color: #8b9aa2;
+}
+
+.login-input-group {
+  margin-bottom: 22px;
+}
+
+.login-input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #54656d;
+  margin-bottom: 8px;
+}
+
+.login-input-group input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #aeb9be;
+  padding: 13px 4px;
+  outline: none;
+  font-size: 16px;
+  color: #37474f;
+  background: transparent;
+}
+
+.login-input-group input:focus {
+  border-bottom: 2px solid #ff5c78;
+}
+
+.login-options {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 0 15px;
+}
+
+.forgot-password {
+  border: none;
+  background: none;
+  color: #ff5c78;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.login-error,
+.otp-error {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff0f2;
+  color: #d6334f;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.login-button {
+  width: 180px;
+  border: none;
+  border-radius: 35px;
+  padding: 15px 30px;
+  background: #ff5c78;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  transition: 0.2s;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 92, 120, 0.3);
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 35px 0 20px;
+  color: #98a5aa;
+  font-size: 13px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  height: 1px;
+  background: #e1e5e7;
+  flex: 1;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-login button {
+  border: 1px solid #e1e5e7;
+  background: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: #66767e;
+  cursor: pointer;
+}
+
+.social-login button span {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.login-security {
+  text-align: center;
+  color: #9aa5aa;
+  font-size: 12px;
+  margin-top: 25px;
+}
+
+/* =====================================================
+   OTP
+   ===================================================== */
+
+.otp-page {
+  min-height: 100vh;
+  background: #252a2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.otp-card {
+  width: 430px;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: white;
+  border-radius: 22px;
+  padding: 50px;
+  text-align: center;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+}
+
+.otp-jarvis {
+  width: 80px;
+  height: 80px;
+  border-radius: 25px;
+  background: #fff0f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  margin: 0 auto 25px;
+}
+
+.otp-card h1 {
+  color: #37474f;
+  margin: 0 0 10px;
+}
+
+.otp-card p {
+  color: #73838a;
+}
+
+.otp-description {
+  display: block;
+  color: #9aa5aa;
+  font-size: 13px;
+  margin-top: 25px;
+}
+
+.otp-email {
+  display: block;
+  color: #ff5c78;
+  margin-top: 5px;
+}
+
+.otp-input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 30px 0 15px;
+  padding: 16px;
+  border: 2px solid #e1e5e7;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 25px;
+  letter-spacing: 8px;
+  outline: none;
+}
+
+.otp-input:focus {
+  border-color: #ff5c78;
+}
+
+.otp-button {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  background: #ff5c78;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.demo-otp {
+  font-size: 12px;
+  margin-top: 20px;
+  color: #8b989e !important;
+}
+
+.demo-otp strong {
+  color: #ff5c78;
+}
+
+.back-login {
+  border: none;
+  background: none;
+  color: #66767e;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.success-card {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.success-icon {
+  width: 75px;
+  height: 75px;
+  margin: 0 auto 25px;
+  border-radius: 50%;
+  background: #e8fff2;
+  color: #1ca765;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+  .login-page {
+    padding: 15px;
+  }
+
+  .login-card {
+    grid-template-columns: 1fr;
+  }
+
+  .login-welcome {
+    min-height: 280px;
+  }
+
+  .jarvis-content {
+    min-height: 280px;
+    padding: 35px;
+  }
+
+  .jarvis-content h1 {
+    font-size: 38px;
+  }
+
+  .jarvis-icon {
+    width: 55px;
+    height: 55px;
+    font-size: 30px;
+  }
+
+  .jarvis-description,
+  .jarvis-status {
+    display: none;
+  }
+
+  .login-form-panel {
+    padding: 40px 25px;
+  }
+}

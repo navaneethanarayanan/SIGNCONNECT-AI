@@ -27,8 +27,22 @@ export default function CameraPreview() {
       });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setCameraActive(true);
+  const video = videoRef.current;
+
+  video.srcObject = stream;
+
+  video.onloadedmetadata = async () => {
+    try {
+      await video.play();
+      console.log("Camera video started");
+      console.log("Video dimensions:", video.videoWidth, video.videoHeight);
+    } catch (error) {
+      console.error("Video play error:", error);
+    }
+  };
+
+  setCameraActive(true);
+}
       }
     } catch (error) {
       console.error(error);

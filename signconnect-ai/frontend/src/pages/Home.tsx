@@ -1,3 +1,5 @@
+import HumanTracker from "../components/HumanTracker";
+<HumanTracker />
 import {
   ArrowRight,
   Brain,
@@ -19,6 +21,7 @@ import CameraPreview from "../components/CameraPreview";
 export default function Home() {
   return (
     <div className="home-page">
+       <HumanTracker />
 
       {/* ================= HERO ================= */}
 
