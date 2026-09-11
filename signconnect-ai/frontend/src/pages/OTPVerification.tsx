@@ -36,7 +36,7 @@ function OTPVerification() {
       );
 
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, 1200);
 
       return;
@@ -132,4 +132,3 @@ function OTPVerification() {
 }
 
 export default OTPVerification;
-

@@ -7,8 +7,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-export default function CameraPreview() {
+type CameraPreviewProps = {
+  onSignRecognized?: (sign: string) => void;
+};
+
+export default function CameraPreview({ onSignRecognized: _onSignRecognized }: CameraPreviewProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState("");
@@ -26,24 +31,10 @@ export default function CameraPreview() {
         audio: false,
       });
 
-      if (videoRef.current) {
-  const video = videoRef.current;
-
-  video.srcObject = stream;
-
-  video.onloadedmetadata = async () => {
-    try {
-      await video.play();
-      console.log("Camera video started");
-      console.log("Video dimensions:", video.videoWidth, video.videoHeight);
-    } catch (error) {
-      console.error("Video play error:", error);
-    }
-  };
-
-  setCameraActive(true);
-}
-      }
+      // The video element is rendered only after cameraActive becomes true.
+      // Keep the stream first, then attach it in the effect below.
+      streamRef.current = stream;
+      setCameraActive(true);
     } catch (error) {
       console.error(error);
       setCameraError(
@@ -53,27 +44,30 @@ export default function CameraPreview() {
   };
 
   const stopCamera = () => {
-    const video = videoRef.current;
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
 
-    if (video?.srcObject) {
-      const stream = video.srcObject as MediaStream;
-
-      stream.getTracks().forEach((track) => track.stop());
-
-      video.srcObject = null;
-    }
+    if (videoRef.current) videoRef.current.srcObject = null;
 
     setCameraActive(false);
   };
 
   useEffect(() => {
-    return () => {
-      const video = videoRef.current;
+    const video = videoRef.current;
+    const stream = streamRef.current;
 
-      if (video?.srcObject) {
-        const stream = video.srcObject as MediaStream;
-        stream.getTracks().forEach((track) => track.stop());
-      }
+    if (!cameraActive || !video || !stream) return;
+
+    video.srcObject = stream;
+    video.play().catch((error: unknown) => {
+      console.error(error);
+      setCameraError("Unable to play the camera preview.");
+    });
+  }, [cameraActive]);
+
+  useEffect(() => {
+    return () => {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
 

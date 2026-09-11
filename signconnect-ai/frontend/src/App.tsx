@@ -49,8 +49,11 @@ function App() {
         />
 
         {/* Protected Application */}
+        {/* Always show login first when the app URL is opened. */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route
-          path="/"
+          path="/home"
           element={
             <ProtectedRoute>
               <Home />
