@@ -22,6 +22,13 @@ export default function CameraPreview({ onSignRecognized: _onSignRecognized }: C
     try {
       setCameraError("");
 
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraError(
+          "Camera access needs HTTPS or http://localhost. Open the app on localhost or a secure https link."
+        );
+        return;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1280 },
@@ -31,15 +38,25 @@ export default function CameraPreview({ onSignRecognized: _onSignRecognized }: C
         audio: false,
       });
 
-      // The video element is rendered only after cameraActive becomes true.
-      // Keep the stream first, then attach it in the effect below.
+      // Keep the stream first; the callback ref below attaches it
+      // the moment the video element mounts.
       streamRef.current = stream;
       setCameraActive(true);
     } catch (error) {
       console.error(error);
-      setCameraError(
-        "Camera permission was denied or the camera is unavailable."
-      );
+      const name = (error as DOMException)?.name;
+
+      if (name === "NotAllowedError" || name === "SecurityError") {
+        setCameraError(
+          "Camera permission was denied. Allow camera access in your browser and try again."
+        );
+      } else if (name === "NotFoundError" || name === "OverconstrainedError") {
+        setCameraError("No usable camera was found on this device.");
+      } else {
+        setCameraError(
+          "The camera could not be started. Close other apps using it and try again."
+        );
+      }
     }
   };
 
@@ -52,18 +69,15 @@ export default function CameraPreview({ onSignRecognized: _onSignRecognized }: C
     setCameraActive(false);
   };
 
-  useEffect(() => {
-    const video = videoRef.current;
-    const stream = streamRef.current;
+  const attachStream = (video: HTMLVideoElement | null) => {
+    if (!video || !streamRef.current) return;
 
-    if (!cameraActive || !video || !stream) return;
-
-    video.srcObject = stream;
+    video.srcObject = streamRef.current;
     video.play().catch((error: unknown) => {
       console.error(error);
       setCameraError("Unable to play the camera preview.");
     });
-  }, [cameraActive]);
+  };
 
   useEffect(() => {
     return () => {
@@ -102,7 +116,7 @@ export default function CameraPreview({ onSignRecognized: _onSignRecognized }: C
         {cameraActive ? (
           <>
             <video
-              ref={videoRef}
+              ref={attachStream}
               autoPlay
               playsInline
               muted

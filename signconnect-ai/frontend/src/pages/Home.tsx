@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 
 import AIStatus from "../components/AIStatus";
 import CameraPreview from "../components/CameraPreview";
+import type { JarvisState } from "../components/JarvisAvatar";
 
 const JarvisAvatar = lazy(() => import("../components/JarvisAvatar"));
 
@@ -66,6 +67,8 @@ export default function Home() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [textInput, setTextInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [assistantError, setAssistantError] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -103,6 +106,9 @@ export default function Home() {
     // A slower, lower-pitched system voice gives Jarvis a futuristic AI tone.
     speech.rate = 0.88;
     speech.pitch = 0.55;
+    speech.onstart = () => setIsSpeaking(true);
+    speech.onend = () => setIsSpeaking(false);
+    speech.onerror = () => setIsSpeaking(false);
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(speech);
   };
@@ -139,12 +145,14 @@ export default function Home() {
         );
       }
 
+      setAssistantError(false);
       setMessages((current) => [
         ...current,
         { id: Date.now() + 1, type: "jarvis", label: "🔊 Jarvis", text: reply, detail: "AI reply" },
       ]);
       speak(reply);
     } catch (error) {
+      setAssistantError(true);
       const offlineReply = createOfflineReply(message, language as keyof typeof languageSettings);
       setMessages((current) => [
         ...current,
@@ -169,6 +177,14 @@ export default function Home() {
       { id: Date.now(), type: "sign", label: "🤟 Sign input", text: sign, detail: "Recognized" },
     ]);
   };
+
+  const jarvisState: JarvisState = assistantError
+    ? "error"
+    : isSpeaking
+      ? "speaking"
+      : isSending
+        ? "thinking"
+        : "listening";
 
   return (
     <div className="home-page">
@@ -407,10 +423,9 @@ export default function Home() {
 
             <div className="avatar-stage">
               <Suspense fallback={<div className="avatar-loading">Loading Jarvis…</div>}>
-                <JarvisAvatar active={isSending} />
+                <JarvisAvatar state={jarvisState} />
               </Suspense>
               <span className="avatar-3d-hint">Drag to explore Jarvis</span>
-
             </div>
 
 

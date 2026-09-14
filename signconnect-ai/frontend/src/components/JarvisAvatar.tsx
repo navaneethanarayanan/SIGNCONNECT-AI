@@ -1,13 +1,57 @@
-import { Float, OrbitControls, Sparkles, useAnimations, useGLTF } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
+import {
+  Float,
+  OrbitControls,
+  Sparkles,
+  useAnimations,
+  useGLTF,
+} from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import {
+  Brain,
+  Mic,
+  TriangleAlert,
+  Upload,
+  Volume2,
+  X,
+} from "lucide-react";
 import type { Group } from "three";
+
+export type JarvisState =
+  | "idle"
+  | "listening"
+  | "thinking"
+  | "speaking"
+  | "error";
 
 type JarvisAvatarProps = {
   active?: boolean;
+  state?: JarvisState;
 };
 
-function HumanAvatar({ active = false }: JarvisAvatarProps) {
+// Drop your AI assistant portrait (your exact human face) here:
+//   frontend/public/avatars/jarvis.png  (or .jpg/.jpeg/.webp)
+// It always wins over the placeholder.
+// You can also click "Set my face" on the avatar to upload a photo
+// straight from the browser — it's saved locally and used as the face.
+const CUSTOM_PHOTO_KEY = "signconnect-avatar-photo";
+const PHOTO_FILES = [
+  "/avatars/jarvis.png",
+  "/avatars/jarvis.jpg",
+  "/avatars/jarvis.jpeg",
+  "/avatars/jarvis.webp",
+  "/avatars/jarvis.svg",
+];
+
+const stateLabels: Record<JarvisState, string> = {
+  idle: "Idle",
+  listening: "Listening...",
+  thinking: "Thinking...",
+  speaking: "Speaking...",
+  error: "Need attention",
+};
+
+function HumanAvatar({ active }: { active: boolean }) {
   const avatar = useRef<Group>(null);
   const { scene, animations } = useGLTF("/models/jarvis-human.glb");
   const { actions } = useAnimations(animations, avatar);
@@ -37,7 +81,7 @@ function HumanAvatar({ active = false }: JarvisAvatarProps) {
 
 useGLTF.preload("/models/jarvis-human.glb");
 
-export default function JarvisAvatar({ active = false }: JarvisAvatarProps) {
+function Jarvis3D({ active }: { active: boolean }) {
   return (
     <Canvas
       className="jarvis-3d-canvas"
@@ -67,5 +111,159 @@ export default function JarvisAvatar({ active = false }: JarvisAvatarProps) {
         maxPolarAngle={Math.PI / 1.8}
       />
     </Canvas>
+  );
+}
+
+function StateIcon({ state }: { state: JarvisState }) {
+  if (state === "thinking") return <Brain size={12} />;
+  if (state === "speaking") return <Volume2 size={12} />;
+  if (state === "listening") return <Mic size={12} />;
+  if (state === "error") return <TriangleAlert size={12} />;
+  return null;
+}
+
+export default function JarvisAvatar({
+  active = false,
+  state,
+}: JarvisAvatarProps) {
+  const resolved: JarvisState = state ?? (active ? "thinking" : "listening");
+  const isActive = resolved !== "idle" && resolved !== "listening";
+
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const [customPhoto, setCustomPhoto] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(CUSTOM_PHOTO_KEY);
+    } catch {
+      return null;
+    }
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const photoSource =
+    customPhoto ??
+    (sourceIndex < PHOTO_FILES.length ? PHOTO_FILES[sourceIndex] : null);
+
+  const photoMissing = !photoSource;
+
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Please use a photo under 5 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const url = String(reader.result ?? "");
+
+      try {
+        localStorage.setItem(CUSTOM_PHOTO_KEY, url);
+      } catch {
+        // Storage full — still show the photo for this session.
+      }
+
+      setCustomPhoto(url);
+    };
+
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  };
+
+  const clearCustomPhoto = () => {
+    try {
+      localStorage.removeItem(CUSTOM_PHOTO_KEY);
+    } catch {
+      // Ignore — nothing to clear.
+    }
+
+    setCustomPhoto(null);
+  };
+
+  if (photoMissing) {
+    return <Jarvis3D active={isActive} />;
+  }
+
+  return (
+    <div className={`jarvis-photo jarvis-state-${resolved}`}>
+      <div className="jarvis-photo-halo" aria-hidden="true" />
+      <div className="jarvis-photo-ring" aria-hidden="true" />
+
+      <div className="jarvis-photo-frame">
+        <img
+          src={photoSource!}
+          alt="Jarvis — your AI assistant"
+          className="jarvis-photo-img"
+          draggable={false}
+          onDragStart={(event) => event.preventDefault()}
+          onError={() => {
+            if (!customPhoto) setSourceIndex((index) => index + 1);
+          }}
+        />
+      </div>
+
+      <div className="jarvis-photo-effects" aria-hidden="true">
+        {resolved === "listening" && (
+          <span className="fx-pulse" />
+        )}
+
+        {resolved === "thinking" && (
+          <span className="fx-orbs">
+            <i />
+            <i />
+            <i />
+          </span>
+        )}
+
+        {resolved === "speaking" && (
+          <span className="fx-wave">
+            <i />
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+        )}
+      </div>
+
+      <div className="jarvis-photo-set">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={handleSelect}
+        />
+
+        <button
+          type="button"
+          className="jarvis-photo-set-btn"
+          title="Upload your exact face. You can also drop it at frontend/public/avatars/jarvis.png"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Upload size={12} />
+          Set my face
+        </button>
+
+        {customPhoto && (
+          <button
+            type="button"
+            className="jarvis-photo-set-btn jarvis-photo-set-btn-clear"
+            title="Use the default Jarvis face again"
+            onClick={clearCustomPhoto}
+          >
+            <X size={12} />
+          </button>
+        )}
+      </div>
+
+      <div className="jarvis-photo-status">
+        <StateIcon state={resolved} />
+        <span>{stateLabels[resolved]}</span>
+      </div>
+    </div>
   );
 }
